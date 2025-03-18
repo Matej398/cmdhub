@@ -27,20 +27,25 @@
             background-color: #1a1a1a;
             color: #ffffff;
             line-height: 1.6;
-            position: relative;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
+            overflow-y: auto; /* Allow vertical scrolling */
         }
 
         .container {
             max-width: 800px;
             margin: 2rem auto;
             padding: 0 1rem;
-            padding-bottom: 70px; /* Space for footer */
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1; /* This pushes the footer down */
+            margin-bottom: 70px; /* Space for footer */
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem; /* Increased from 2rem to 3rem */
             color: #00ff9d;
             font-size: 2.5rem;
             letter-spacing: 2px;
@@ -49,8 +54,8 @@
 
         .tabs {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 0.5rem; /* Reduced from 1rem */
+            margin-bottom: 0.5rem; /* Reduced from 1rem */
             flex-wrap: wrap;
         }
 
@@ -70,23 +75,37 @@
             color: #1a1a1a;
         }
 
+        /* Create a container with fixed dimensions for tab content */
+        .tab-container {
+            width: 100%;
+            position: relative;
+        }
+
         .tab-content {
             background-color: #2a2a2a;
-            padding: 1.5rem;
+            padding: 1rem;  /* Reduced from 1.5rem to 0.75rem */
             border-radius: 8px;
             display: none;
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 100%;
+            min-width: 100%;
         }
 
         .tab-content.active {
             display: block;
+            width: 100%;
         }
 
         .command {
             background-color: #1a1a1a;
             padding: 1rem;
+            padding-right: 90px; /* Add space for the button */
             margin: 1rem 0;
             border-radius: 4px;
             position: relative;
+            width: 100%; /* Ensure all commands have the same width */
+            box-sizing: border-box; /* Include padding in width calculation */
         }
 
         .command pre {
@@ -95,14 +114,16 @@
             word-wrap: break-word;
             color: #00ff9d;
             font-weight: 500;
+            max-width: calc(100% - 90px); /* Ensure text doesn't overlap with button */
         }
 
         .command .explanation {
-            margin-top: 0.5rem;
+            margin-top: 0.25rem;  /* Reduced from 0.5rem to 0.25rem */
             font-size: 0.9rem;
             color: #888;
             font-style: italic;
             font-weight: 400;
+            max-width: calc(100% - 90px); /* Ensure explanation doesn't overlap with button */
         }
 
         .copy-btn {
@@ -118,6 +139,8 @@
             cursor: pointer;
             transition: opacity 0.3s;
             font-weight: 500;
+            width: 80px; /* Fixed width */
+            text-align: center;
         }
 
         .copy-btn:hover {
@@ -126,27 +149,35 @@
 
         footer {
             text-align: center;
-            padding: 1rem;
+            padding: 0.75rem;
             color: #888;
             font-size: 0.9rem;
             border-top: 1px solid #2a2a2a;
-            position: absolute;
+            position: fixed; /* Fixed at the bottom */
             bottom: 0;
+            left: 0;
             width: 100%;
             background-color: #1a1a1a;
         }
 
-        @media (min-height: 800px) {
-            /* For taller screens, keep footer at bottom without scroll */
-            body {
-                overflow-y: hidden;
+        @media (max-width: 600px) {
+            /* Additional adjustments for very small screens */
+            .container {
+                margin: 0.5rem auto;
+                padding: 0 0.25rem; /* Reduce padding to maximize width */
             }
-        }
-
-        @media (max-height: 799px) {
-            /* For shorter screens, allow scrolling */
-            body {
-                overflow-y: auto;
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .command {
+                padding-right: 90px; /* Make room for copy button */
+            }
+            
+            .copy-btn {
+                width: 70px; /* Smaller button on mobile */
+                padding: 0.4rem 0.5rem;
             }
         }
     </style>
@@ -161,7 +192,7 @@
             <button class="tab" data-tab="vps">VPS</button>
             <button class="tab" data-tab="general">General</button>
         </div>
-        <div class="tab-content active" id="general">
+        <div class="tab-content" id="general">
             <div class="command">
                 <pre>q</pre>
                 <div class="explanation">Exit/quit command output view (e.g., systemctl status, less, more)</div>
@@ -198,7 +229,7 @@
                 <button class="copy-btn">Copy</button>
             </div>
         </div>
-        <div class="tab-content" id="github">
+        <div class="tab-content active" id="github">
             <div class="command">
                 <pre>git init</pre>
                 <div class="explanation">Initialize a new Git repository in the current directory</div>
