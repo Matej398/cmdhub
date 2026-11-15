@@ -50,6 +50,6 @@ jobs:
           echo "=PM2="; which pm2 && (pm2 jlist 2>/dev/null | head -c 3000)
           echo "=CRONTAB="; crontab -l 2>/dev/null | head -20; ls -la /etc/cron.d 2>/dev/null | head
           echo "=DONE="
-EOS
+          EOS
           echo "===OUT==="
           cat /tmp/out | head -1200
